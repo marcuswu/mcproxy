@@ -8,7 +8,7 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
 
-func HandleCommand(command *packet.CommandRequest, proxy Proxy) (*packet.CommandRequest, bool) {
+func (proxy Proxy) HandleCommand(command *packet.CommandRequest) (*packet.CommandRequest, bool) {
 	log.Info().Msgf("Got command %v", command.CommandLine)
 	if strings.HasPrefix(command.CommandLine, "/gdbs") {
 		// serverMessage := packet.Text{TextType: packet.TextTypeSystem, Message: "This command is not implemented yet"}
@@ -30,7 +30,12 @@ func HandleCommand(command *packet.CommandRequest, proxy Proxy) (*packet.Command
 			},
 			TransactionData: &protocol.NormalTransactionData{},
 		}
-		_ = proxy.ClientConn.WritePacket(&transaction)
+		log.Info().Msgf("sending diamond block inventory transaction")
+		err := proxy.ServerConn.WritePacket(&transaction)
+		if err != nil {
+			log.Info().Msgf("error sending inventory transaction %v", err)
+		}
+
 		return command, false
 	}
 
