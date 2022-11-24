@@ -70,7 +70,7 @@ func handleConn(clientConn *minecraft.Conn, listener *minecraft.Listener, config
 			if err != nil {
 				return
 			}
-			pk, forward := cheat.HandleClientPacket(pk, proxy)
+			pk, forward := proxy.HandleClientPacket(pk)
 			if !forward {
 				continue
 			}
@@ -93,7 +93,7 @@ func handleConn(clientConn *minecraft.Conn, listener *minecraft.Listener, config
 				}
 				return
 			}
-			pk, forward := cheat.HandleServerPacket(pk, proxy)
+			pk, forward := proxy.HandleServerPacket(pk)
 			if !forward {
 				continue
 			}
