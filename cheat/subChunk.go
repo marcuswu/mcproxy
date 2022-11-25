@@ -5,10 +5,15 @@ import (
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
 
-func (proxy Proxy) HandleSubChunk(chunk *packet.SubChunk) (*packet.SubChunk, bool) {
-	log.Info().Msgf("got subchunk with position %d, %d, %d", chunk.Position.X(), chunk.Position.Y(), chunk.Position.Z())
+func (proxy *Proxy) HandleSubChunk(c *packet.SubChunk) (*packet.SubChunk, bool) {
+	log.Info().Msgf("got subchunk with position %d, %d, %d", c.Position.X(), c.Position.Y(), c.Position.Z())
+
 	// for _, e := range chunk.SubChunkEntries {
 	// e.Offset
 	// }
-	return chunk, true
+	// chunk
+
+	// The raw data for a chunk is a varint followed by that many varints representing indexes to the global block palette
+
+	return c, true
 }

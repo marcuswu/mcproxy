@@ -5,11 +5,13 @@ import (
 	"os"
 	"sync"
 
+	"github.com/df-mc/dragonfly/server/world/chunk"
 	"github.com/marcuswu/mcproxy/cheat"
 	"github.com/marcuswu/mcproxy/token"
 	"github.com/pelletier/go-toml"
 	"github.com/rs/zerolog/log"
 	"github.com/sandertv/gophertunnel/minecraft"
+	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"golang.org/x/oauth2"
 )
 
@@ -60,7 +62,7 @@ func handleConn(clientConn *minecraft.Conn, listener *minecraft.Listener, config
 		g.Done()
 	}()
 
-	proxy := cheat.Proxy{ClientConn: clientConn, ServerConn: serverConn}
+	proxy := &cheat.Proxy{ClientConn: clientConn, ServerConn: serverConn, Chunks: make(map[protocol.ChunkPos]*chunk.Chunk)}
 
 	go func() {
 		defer listener.Disconnect(clientConn, "connection lost")
