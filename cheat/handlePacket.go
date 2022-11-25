@@ -1,7 +1,7 @@
 package cheat
 
 import (
-	"github.com/df-mc/dragonfly/server/world/chunk"
+	"github.com/marcuswu/mcproxy/chunk"
 	"github.com/sandertv/gophertunnel/minecraft"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"

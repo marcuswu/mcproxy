@@ -2,15 +2,18 @@ package cheat
 
 import (
 	"github.com/df-mc/dragonfly/server/block/cube"
-	"github.com/df-mc/dragonfly/server/world/chunk"
+	"github.com/marcuswu/mcproxy/chunk"
 	"github.com/marcuswu/mcproxy/latestmappings"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
 
 func (proxy *Proxy) HandleLevelChunk(c *packet.LevelChunk) (*packet.LevelChunk, bool) {
 	// Decode raw payload to generate palette
-	latestmappings.StateToRuntimeID("minecraft:air", nil)
-	levelChunk, err := chunk.NetworkDecode(0, c.RawPayload, int(c.SubChunkCount), cube.Range{-64, int(c.HighestSubChunk)})
+	air, ok := latestmappings.StateToRuntimeID("minecraft:air", nil)
+	if !ok {
+		return c, true
+	}
+	levelChunk, err := chunk.NetworkDecode(air, c.RawPayload, int(c.SubChunkCount), cube.Range{-64, int(c.HighestSubChunk)})
 	if err != nil {
 		return c, true
 	}
