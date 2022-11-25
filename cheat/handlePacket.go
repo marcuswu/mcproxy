@@ -23,7 +23,7 @@ func (proxy *Proxy) HandleClientPacket(pk packet.Packet) (packet.Packet, bool) {
 	case packet.IDInventoryTransaction:
 		return proxy.HandleInventoryTransaction(pk.(*packet.InventoryTransaction))
 	case packet.IDMovePlayer:
-		return proxy.HandleMovePlayer(pk.(*packet.MovePlayer))
+		return proxy.HandleMovePlayer(pk.(*packet.MovePlayer), true)
 	}
 
 	return pk, true
@@ -37,7 +37,7 @@ func (proxy *Proxy) HandleServerPacket(pk packet.Packet) (packet.Packet, bool) {
 	case packet.IDSubChunk:
 		return proxy.HandleSubChunk(pk.(*packet.SubChunk))
 	case packet.IDMovePlayer:
-		return proxy.HandleMovePlayer(pk.(*packet.MovePlayer))
+		return proxy.HandleMovePlayer(pk.(*packet.MovePlayer), false)
 	}
 	return pk, true
 }
