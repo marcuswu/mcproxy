@@ -1,12 +1,11 @@
 package cheat
 
 import (
-	"github.com/rs/zerolog/log"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
 
 func (proxy *Proxy) HandleSubChunk(c *packet.SubChunk) (*packet.SubChunk, bool) {
-	log.Info().Msgf("got subchunk with position %d, %d, %d", c.Position.X(), c.Position.Y(), c.Position.Z())
+	// log.Info().Msgf("got subchunk with position %d, %d, %d", c.Position.X(), c.Position.Y(), c.Position.Z())
 
 	// for _, e := range chunk.SubChunkEntries {
 	// e.Offset

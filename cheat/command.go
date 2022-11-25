@@ -41,6 +41,9 @@ func (proxy *Proxy) HandleCommand(command *packet.CommandRequest) (*packet.Comma
 		return command, false
 	}
 	if strings.HasPrefix(command.CommandLine, "/find") {
+		if proxy.PlayerPos == nil {
+			return command, false
+		}
 		commandParts := strings.Split(command.CommandLine, " ")
 		blockName := commandParts[1]
 		// Loop through chunks looking for diamond ore nearest the player
