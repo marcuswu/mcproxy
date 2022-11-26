@@ -22,7 +22,7 @@ func NetworkDecode(air uint32, data []byte, count int, r cube.Range) (*Chunk, er
 	)
 	for i := 0; i < count; i++ {
 		index := uint8(i)
-		c.sub[index], err = DecodeSubChunk(buf, c, &index, NetworkEncoding)
+		c.sub[c.SubIndex(int16(index))], err = DecodeSubChunk(buf, c, &index, NetworkEncoding)
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +69,7 @@ func DiskDecode(data SerialisedData, r cube.Range) (*Chunk, error) {
 			continue
 		}
 		index := uint8(i)
-		if c.sub[index], err = DecodeSubChunk(bytes.NewBuffer(sub), c, &index, DiskEncoding); err != nil {
+		if c.sub[c.SubIndex(int16(index))], err = DecodeSubChunk(bytes.NewBuffer(sub), c, &index, DiskEncoding); err != nil {
 			return nil, err
 		}
 	}
@@ -78,7 +78,7 @@ func DiskDecode(data SerialisedData, r cube.Range) (*Chunk, error) {
 
 // decodeSubChunk decodes a SubChunk from a bytes.Buffer. The Encoding passed defines how the block storages of the
 // SubChunk are decoded.
-func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, index *byte, e Encoding) (*SubChunk, error) {
+func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, Y *byte, e Encoding) (*SubChunk, error) {
 	ver, err := buf.ReadByte()
 	if err != nil {
 		return nil, fmt.Errorf("error reading version: %w", err)
@@ -101,13 +101,13 @@ func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, index *byte, e Encoding) (*SubC
 			return nil, fmt.Errorf("error reading storage count: %w", err)
 		}
 		if ver == 9 {
-			uIndex, err := buf.ReadByte()
+			*Y, err = buf.ReadByte()
 			if err != nil {
 				return nil, fmt.Errorf("error reading sub-chunk index: %w", err)
 			}
 			// The index as written here isn't the actual index of the sub-chunk within the chunk. Rather, it is the Y
 			// value of the sub-chunk. This means that we need to translate it to an index.
-			*index = uint8(int8(uIndex) - int8(c.r[0]>>4))
+			// *index = uint8(int8(uIndex) - int8(c.r[0]>>4))
 		}
 		sub.storages = make([]*PalettedStorage, storageCount)
 

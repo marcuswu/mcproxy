@@ -20,6 +20,22 @@ func (sub *SubChunk) Empty() bool {
 	return len(sub.storages) == 0 || (len(sub.storages) == 1 && len(sub.storages[0].palette.values) == 1 && sub.storages[0].palette.values[0] == sub.air)
 }
 
+func (sub *SubChunk) CombineSubChunk(other *SubChunk) {
+	for i, layer := range other.Layers() {
+		for x := byte(0); x < 16; x++ {
+			for y := byte(0); y < 16; y++ {
+				for z := byte(0); z < 16; z++ {
+					block := layer.At(x, y, z)
+					if block == sub.air {
+						continue
+					}
+					sub.SetBlock(x, y, x, uint8(i), block)
+				}
+			}
+		}
+	}
+}
+
 // Layer returns a certain block storage/layer from a sub chunk. If no storage at the layer exists, the layer
 // is created, as well as all layers between the current highest layer and the new highest layer.
 func (sub *SubChunk) Layer(layer uint8) *PalettedStorage {

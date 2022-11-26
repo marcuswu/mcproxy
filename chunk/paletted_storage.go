@@ -64,6 +64,10 @@ func (storage *PalettedStorage) Palette() *Palette {
 	return storage.palette
 }
 
+func (storage *PalettedStorage) IsEmpty(air uint32) bool {
+	return len(storage.palette.values) == 1 && storage.palette.values[0] == air
+}
+
 // At returns the value of the PalettedStorage at a given x, y and z.
 func (storage *PalettedStorage) At(x, y, z byte) uint32 {
 	return storage.palette.Value(storage.paletteIndex(x&15, y&15, z&15))
