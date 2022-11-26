@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/rs/zerolog/log"
 )
 
 // StateToRuntimeID must hold a function to convert a name and its state properties to a runtime ID.
@@ -80,6 +81,7 @@ func DiskDecode(data SerialisedData, r cube.Range) (*Chunk, error) {
 // SubChunk are decoded.
 func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, Y *byte, e Encoding) (*SubChunk, error) {
 	ver, err := buf.ReadByte()
+	log.Info().Msgf("Read Subchunk Entity Version %d", ver)
 	if err != nil {
 		return nil, fmt.Errorf("error reading version: %w", err)
 	}
@@ -97,11 +99,13 @@ func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, Y *byte, e Encoding) (*SubChunk
 	case 8, 9:
 		// Version 8 allows up to 256 layers for one sub chunk.
 		storageCount, err := buf.ReadByte()
+		log.Info().Msgf("Storage count %d", storageCount)
 		if err != nil {
 			return nil, fmt.Errorf("error reading storage count: %w", err)
 		}
 		if ver == 9 {
 			*Y, err = buf.ReadByte()
+			log.Info().Msgf("Reading for Y value %d", *Y)
 			if err != nil {
 				return nil, fmt.Errorf("error reading sub-chunk index: %w", err)
 			}
@@ -112,6 +116,7 @@ func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, Y *byte, e Encoding) (*SubChunk
 		sub.storages = make([]*PalettedStorage, storageCount)
 
 		for i := byte(0); i < storageCount; i++ {
+			log.Info().Msgf("Beginning decode palette storage %d", i)
 			sub.storages[i], err = decodePalettedStorage(buf, e, BlockPaletteEncoding)
 			if err != nil {
 				return nil, err
@@ -152,7 +157,7 @@ func decodeBiomes(buf *bytes.Buffer, c *Chunk, e Encoding) error {
 // decodePalettedStorage decodes a PalettedStorage from a bytes.Buffer. The Encoding passed is used to read either a
 // network or disk block storage.
 func decodePalettedStorage(buf *bytes.Buffer, e Encoding, pe paletteEncoding) (*PalettedStorage, error) {
-	blockSize, err := buf.ReadByte()
+	blockSize, err := buf.ReadByte() // read bits per entry
 	if err != nil {
 		return nil, fmt.Errorf("error reading block size: %w", err)
 	}
@@ -162,7 +167,9 @@ func decodePalettedStorage(buf *bytes.Buffer, e Encoding, pe paletteEncoding) (*
 	}
 
 	size := paletteSize(blockSize)
+	log.Info().Msgf("palette bits per entry %d", blockSize)
 	uint32Count := size.uint32s()
+	log.Info().Msgf("storage block count %d", uint32Count)
 
 	uint32s := make([]uint32, uint32Count)
 	byteCount := uint32Count * 4

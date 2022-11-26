@@ -36,7 +36,12 @@ func (proxy *Proxy) HandleSubChunk(c *packet.SubChunk) (*packet.SubChunk, bool) 
 			var Y uint8
 			buf := bytes.NewBuffer(e.RawPayload)
 			s, err := chunk.DecodeSubChunk(buf, ch, &Y, chunk.NetworkEncoding)
-			ch.SubChunk(int16(Y)).CombineSubChunk(s)
+			/*idx := ch.SubIndex(int16(Y))
+			if len(ch.Sub()) <= int(idx) {
+				ch.SetSubChunk(s, int16(Y))
+			} else {
+				ch.SubChunk(idx).CombineSubChunk(s)
+			}*/
 			if err != nil {
 				return c, true
 			}
