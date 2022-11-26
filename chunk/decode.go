@@ -23,6 +23,7 @@ func NetworkDecode(air uint32, data []byte, count int, r cube.Range) (*Chunk, er
 	)
 	for i := 0; i < count; i++ {
 		index := uint8(i)
+		log.Debug().Msgf("NetworkDecode calling DecodeSubChunk")
 		c.sub[c.SubIndex(int16(index))], err = DecodeSubChunk(buf, c, &index, NetworkEncoding)
 		if err != nil {
 			return nil, err
@@ -81,7 +82,7 @@ func DiskDecode(data SerialisedData, r cube.Range) (*Chunk, error) {
 // SubChunk are decoded.
 func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, Y *byte, e Encoding) (*SubChunk, error) {
 	ver, err := buf.ReadByte()
-	log.Info().Msgf("Read Subchunk Entity Version %d", ver)
+	// log.Debug().Msgf("Read Subchunk Entity Version %d", ver)
 	if err != nil {
 		return nil, fmt.Errorf("error reading version: %w", err)
 	}
@@ -99,13 +100,13 @@ func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, Y *byte, e Encoding) (*SubChunk
 	case 8, 9:
 		// Version 8 allows up to 256 layers for one sub chunk.
 		storageCount, err := buf.ReadByte()
-		log.Info().Msgf("Storage count %d", storageCount)
+		// log.Debug().Msgf("Storage count %d", storageCount)
 		if err != nil {
 			return nil, fmt.Errorf("error reading storage count: %w", err)
 		}
 		if ver == 9 {
 			*Y, err = buf.ReadByte()
-			log.Info().Msgf("Reading for Y value %d", *Y)
+			// log.Debug().Msgf("Reading for Y value %d", *Y)
 			if err != nil {
 				return nil, fmt.Errorf("error reading sub-chunk index: %w", err)
 			}
@@ -116,7 +117,7 @@ func DecodeSubChunk(buf *bytes.Buffer, c *Chunk, Y *byte, e Encoding) (*SubChunk
 		sub.storages = make([]*PalettedStorage, storageCount)
 
 		for i := byte(0); i < storageCount; i++ {
-			log.Info().Msgf("Beginning decode palette storage %d", i)
+			// log.Debug().Msgf("Beginning decode palette storage %d", i)
 			sub.storages[i], err = decodePalettedStorage(buf, e, BlockPaletteEncoding)
 			if err != nil {
 				return nil, err
@@ -167,9 +168,7 @@ func decodePalettedStorage(buf *bytes.Buffer, e Encoding, pe paletteEncoding) (*
 	}
 
 	size := paletteSize(blockSize)
-	log.Info().Msgf("palette bits per entry %d", blockSize)
 	uint32Count := size.uint32s()
-	log.Info().Msgf("storage block count %d", uint32Count)
 
 	uint32s := make([]uint32, uint32Count)
 	byteCount := uint32Count * 4

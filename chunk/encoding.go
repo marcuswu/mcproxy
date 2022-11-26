@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/rs/zerolog/log"
 	"github.com/sandertv/gophertunnel/minecraft/nbt"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
 )
@@ -157,7 +156,6 @@ func (networkEncoding) decodePalette(buf *bytes.Buffer, blockSize paletteSize, _
 			return nil, fmt.Errorf("invalid palette entry count %v", paletteCount)
 		}
 	}
-	log.Debug().Msgf("palette entry count: %d", paletteCount)
 
 	blocks, temp := make([]uint32, paletteCount), int32(0)
 	for i := int32(0); i < paletteCount; i++ {
