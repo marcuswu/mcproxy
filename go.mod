@@ -20,7 +20,7 @@ require (
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/rs/zerolog v1.28.0 // indirect
 	github.com/sandertv/go-raknet v1.12.0 // indirect
-	github.com/sandertv/gophertunnel v1.25.2 // indirect
+	github.com/sandertv/gophertunnel v1.26.0 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	golang.org/x/crypto v0.3.0 // indirect
