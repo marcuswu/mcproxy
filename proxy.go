@@ -6,7 +6,8 @@ import (
 	"sync"
 
 	"github.com/marcuswu/mcproxy/cheat"
-	"github.com/marcuswu/mcproxy/chunk"
+	_ "github.com/marcuswu/mcproxy/world"
+	"github.com/marcuswu/mcproxy/world/chunk"
 	"github.com/marcuswu/mcproxy/token"
 	"github.com/pelletier/go-toml"
 	"github.com/rs/zerolog/log"
