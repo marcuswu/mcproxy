@@ -24,6 +24,9 @@ func (proxy *Proxy) HandleCommand(command *packet.CommandRequest) (*packet.Comma
 	}
 	if strings.HasPrefix(command.CommandLine, "/identify") {
 		commandParts := strings.Split(command.CommandLine, " ")
+		if len(commandParts) < 4 {
+			return command, false
+		}
 		X, err := strconv.Atoi(commandParts[1])
 		if err != nil {
 			log.Debug().Str("coord", commandParts[1]).Msg("Could not parse X coordinate")
@@ -90,7 +93,7 @@ func (proxy *Proxy) HandleCommand(command *packet.CommandRequest) (*packet.Comma
 		}
 		c, ok := proxy.Chunks[protocol.ChunkPos{chunkX, chunkZ}]
 		if !ok {
-			log.Debug().Msg("Could not find chunk")
+			log.Debug().Int32("chunkX", chunkX).Int32("chunkZ", chunkZ).Msg("Could not find chunk")
 			return command, false
 		}
 		found = false

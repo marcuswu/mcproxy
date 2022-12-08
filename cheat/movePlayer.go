@@ -1,7 +1,8 @@
 package cheat
 
 import (
-	"github.com/rs/zerolog/log"
+	//"github.com/rs/zerolog/log"
+	//"time"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
 )
 
@@ -11,7 +12,7 @@ func (proxy *Proxy) HandleMovePlayer(mp *packet.MovePlayer, fromClient bool) (*p
 	}
 	if mp.EntityRuntimeID == proxy.PlayerID {
 		proxy.PlayerPos = mp
-		log.Info().Msgf("got player %d position %d, %d, %d", mp.EntityRuntimeID, mp.Position.X(), mp.Position.Y(), mp.Position.Z())
+		// log.Info().Msgf("got player %d position %d, %d, %d", mp.EntityRuntimeID, mp.Position.X(), mp.Position.Y(), mp.Position.Z())
 	}
 
 	return mp, true

@@ -1,10 +1,10 @@
 package cheat
 
 import (
+	//"github.com/rs/zerolog/log"
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/marcuswu/mcproxy/world/chunk"
 	"github.com/sandertv/gophertunnel/minecraft/protocol/packet"
-	// "github.com/rs/zerolog/log"
 )
 
 func (proxy *Proxy) HandleLevelChunk(c *packet.LevelChunk) (*packet.LevelChunk, bool) {
@@ -16,6 +16,7 @@ func (proxy *Proxy) HandleLevelChunk(c *packet.LevelChunk) (*packet.LevelChunk, 
 	if err != nil {
 		return c, true
 	}
+	//log.Debug().Int32("X", c.Position.X()).Int32("Z", c.Position.Z()).Msg("got chunk")
 
 	proxy.Chunks[c.Position] = levelChunk
 

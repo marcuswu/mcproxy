@@ -3,6 +3,7 @@ package cheat
 import (
 	"bytes"
 
+	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/marcuswu/mcproxy/world/chunk"
 	"github.com/rs/zerolog/log"
 	"github.com/sandertv/gophertunnel/minecraft/protocol"
@@ -18,9 +19,15 @@ func (proxy *Proxy) HandleSubChunk(c *packet.SubChunk) (*packet.SubChunk, bool) 
 		if e.Result == protocol.SubChunkResultSuccess {
 			var uIndex uint8
 			chunkPos := protocol.ChunkPos{c.Position.X() + int32(e.Offset[0]), c.Position.Z() + int32(e.Offset[2])}
+			//log.Debug().Int32("X", chunkPos.X()).Int32("Z", chunkPos.Z()).Msg("got subchunk")
 			ch, ok := proxy.Chunks[chunkPos]
 			if !ok {
-				return c, true
+				air, ok := chunk.StateToRuntimeID("minecraft:air", nil)
+				if !ok {
+					return c, true
+				}
+				ch = chunk.New(air, cube.Range{-64, 319})
+				proxy.Chunks[chunkPos] = ch
 			}
 			buf := bytes.NewBuffer(e.RawPayload)
 			sch, err := chunk.DecodeSubChunk(buf, ch, &uIndex, chunk.NetworkEncoding)
